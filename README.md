@@ -1,9 +1,11 @@
 # NancyServer2
+WebSerwis do Hobby Hunter, projekt do VS 2015 w C#, jako główny framework użyto Nancy.
+
 Aktualnie używa SQL Server jako motora bazy danych. Pozwoli to na proste postawienie na Azure, gdybyśmy chcieli.
 
 
 
-Instalacja:
+Tworzenie serwera:
 
 Zainstalować SQL Express
 
