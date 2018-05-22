@@ -30,10 +30,6 @@ namespace NancyServer2.Modules
             {
                 return HttpStatusCode.BadRequest;
             }
-            using (SHA512 shaM = new SHA512Managed())
-            {
-                model.Password = Encoding.UTF8.GetString(shaM.ComputeHash(Encoding.UTF8.GetBytes(model.Password)));
-            }
             Guid? guid = this.dao.LogIn(model);
             if(guid != null)
             {
@@ -48,10 +44,6 @@ namespace NancyServer2.Modules
         private dynamic PostUser(dynamic arg)
         {
             var model = this.Bind<User>();
-            using (SHA512 shaM = new SHA512Managed())
-            {
-                model.Password = Encoding.UTF8.GetString(shaM.ComputeHash(Encoding.UTF8.GetBytes(model.Password)));
-            }
             if (this.dao.Register(model))
             {
                 return HttpStatusCode.OK;

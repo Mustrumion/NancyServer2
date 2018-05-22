@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,7 +41,7 @@ namespace NancyServer2.DAOs
                 {
                     ID = reader.GetConverted<int>("id"),
                     Email = reader.GetConverted<string>("email"),
-                    Password = reader.GetConverted<string>("password")
+                    Password = Convert.ToBase64String(reader.GetConverted<byte[]>("password"))
                 };
             }
             reader.Close();
@@ -82,7 +83,12 @@ namespace NancyServer2.DAOs
                 Connection = this.conn
             };
             comm.Parameters.AddWithNullableValue("email", user.Email);
-            comm.Parameters.AddWithNullableValue("password", user.Password);
+            byte[] password = null;
+            using (SHA512 shaM = new SHA512Managed())
+            {
+                password = shaM.ComputeHash(Encoding.ASCII.GetBytes(user.Password));
+            }
+            comm.Parameters.AddWithNullableValue("password", password);
             int rowcount = comm.ExecuteNonQuery();
             if(rowcount == 0)
             {
@@ -109,7 +115,12 @@ namespace NancyServer2.DAOs
                 Connection = this.conn
             };
             comm.Parameters.AddWithNullableValue("email", user.Email);
-            comm.Parameters.AddWithNullableValue("password", user.Password);
+            byte[] password = null;
+            using (SHA512 shaM = new SHA512Managed())
+            {
+                password = shaM.ComputeHash(Encoding.ASCII.GetBytes(user.Password));
+            }
+            comm.Parameters.AddWithNullableValue("password", password);
             SqlDataReader reader = comm.ExecuteReader();
             if (reader.Read())
             {
