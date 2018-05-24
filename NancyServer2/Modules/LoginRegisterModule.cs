@@ -46,7 +46,8 @@ namespace NancyServer2.Modules
             var model = this.Bind<User>();
             if (this.dao.Register(model))
             {
-                return HttpStatusCode.OK;
+                User user = this.dao.GetUserByEmail(model.Email);
+                return user;
             }
             else
             {

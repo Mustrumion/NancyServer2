@@ -40,8 +40,31 @@ namespace NancyServer2.DAOs
                 user = new User()
                 {
                     ID = reader.GetConverted<int>("id"),
-                    Email = reader.GetConverted<string>("email"),
-                    Password = Convert.ToBase64String(reader.GetConverted<byte[]>("password"))
+                    Email = reader.GetConverted<string>("email")
+                };
+            }
+            reader.Close();
+            return user;
+        }
+
+        public User GetUserByEmail(string email)
+        {
+            User user = null;
+            SqlCommand comm = new SqlCommand()
+            {
+                CommandText = "SELECT * FROM users WHERE email = @email",
+                CommandType = System.Data.CommandType.Text,
+                CommandTimeout = 2000,
+                Connection = this.conn
+            };
+            comm.Parameters.AddWithNullableValue("email", email);
+            SqlDataReader reader = comm.ExecuteReader();
+            if (reader.Read())
+            {
+                user = new User()
+                {
+                    ID = reader.GetConverted<int>("id"),
+                    Email = reader.GetConverted<string>("email")
                 };
             }
             reader.Close();
