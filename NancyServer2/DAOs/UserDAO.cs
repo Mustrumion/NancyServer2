@@ -99,6 +99,9 @@ namespace NancyServer2.DAOs
                         + "DECLARE @id AS INT = (SELECT id FROM users WHERE email = @email)\n"
                         + "IF @id IS NULL BEGIN\n"
                         + "INSERT INTO dbo.Users(email, password) VALUES(@email, @password)\n"
+                        + "SELECT 0 AS error\n"
+                        + "END ELSE BEGIN\n"
+                        + "SELECT 1 AS error\n"
                         + "END\n"
                         + "COMMIT",
                 CommandType = System.Data.CommandType.Text,
@@ -112,26 +115,33 @@ namespace NancyServer2.DAOs
                 password = shaM.ComputeHash(Encoding.ASCII.GetBytes(user.Password));
             }
             comm.Parameters.AddWithNullableValue("password", password);
-            int rowcount = comm.ExecuteNonQuery();
-            if(rowcount == 0)
+            SqlDataReader reader = comm.ExecuteReader();
+            int error = 1;
+            if (reader.Read())
             {
-                return false;
+                error = reader.GetConverted<int>("error");
             }
-            return true;
+            reader.Close();
+            if (error == 0)
+            {
+                return true;
+            }
+            return false;
         }
 
-        public Guid? LogIn(User user)
+        public Token LogIn(User user)
         {
-            Guid? result = null;
+            Token result = null;
             SqlCommand comm = new SqlCommand()
             {
                 CommandText = "BEGIN TRANSACTION\n"
                         + "DECLARE @id AS INT = (SELECT id FROM users WHERE email = @email AND password = @password)\n"
                         + "IF @id IS NOT NULL BEGIN\n"
                         + "DECLARE @token AS UNIQUEIDENTIFIER = NEWID()\n"
+                        + "DECLARE @expiration AS DATETIME = DATEADD(MINUTE, 60, CURRENT_TIMESTAMP)\n"
                         + "INSERT INTO dbo.Tokens([guid], userID, expiration)\n"
-                        + "VALUES(@token, @id, DATEADD(MINUTE, 60, CURRENT_TIMESTAMP))\n"
-                        + "SELECT @token as token END\n"
+                        + "VALUES(@token, @id, @expiration)\n"
+                        + "SELECT @token AS token, @expiration AS expiration, @id AS userID END\n"
                         + "COMMIT",
                 CommandType = System.Data.CommandType.Text,
                 CommandTimeout = 2000,
@@ -147,7 +157,14 @@ namespace NancyServer2.DAOs
             SqlDataReader reader = comm.ExecuteReader();
             if (reader.Read())
             {
-                result = reader.GetConverted<Guid?>("token");
+                result = new Token();
+                result.SessionID = reader.GetConverted<Guid>("token");
+                result.Expiration = reader.GetConverted<DateTime>("expiration");
+                result.User = new User()
+                {
+                    ID = reader.GetConverted<int>("userID"),
+                    Email = user.Email
+                };
             }
             reader.Close();
             return result;

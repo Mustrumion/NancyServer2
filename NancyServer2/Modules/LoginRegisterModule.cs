@@ -30,13 +30,11 @@ namespace NancyServer2.Modules
             {
                 return HttpStatusCode.BadRequest;
             }
-            Guid? guid = this.dao.LogIn(model);
-            if(guid != null)
+            Token session = this.dao.LogIn(model);
+            if(session != null)
             {
                 var response = new Response();
-                response.StatusCode = HttpStatusCode.OK;
-                response.Headers.Add("Authorization", guid.Value.ToString());
-                return response;
+                return Negotiate.WithModel(session).WithHeader("Authorization", session.SessionID.ToString()).WithStatusCode(HttpStatusCode.OK);
             }
             return HttpStatusCode.Unauthorized;
         }

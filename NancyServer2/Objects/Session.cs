@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace NancyServer2.Objects
 {
-    public class Session
+    public class Token
     {
-        public User User { get; set; }
         public Guid SessionID { get; set; }
         public DateTime Expiration { get; set; }
+        public User User { get; set; }
     }
 }
