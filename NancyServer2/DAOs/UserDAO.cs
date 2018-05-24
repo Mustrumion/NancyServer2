@@ -95,15 +95,14 @@ namespace NancyServer2.DAOs
         {
             SqlCommand comm = new SqlCommand()
             {
-                CommandText = "BEGIN TRANSACTION\n"
-                        + "DECLARE @id AS INT = (SELECT id FROM users WHERE email = @email)\n"
+                CommandText =
+                          "DECLARE @id AS INT = (SELECT id FROM users WHERE email = @email)\n"
                         + "IF @id IS NULL BEGIN\n"
                         + "INSERT INTO dbo.Users(email, password) VALUES(@email, @password)\n"
                         + "SELECT 0 AS error\n"
                         + "END ELSE BEGIN\n"
                         + "SELECT 1 AS error\n"
-                        + "END\n"
-                        + "COMMIT",
+                        + "END\n",
                 CommandType = System.Data.CommandType.Text,
                 CommandTimeout = 2000,
                 Connection = this.conn
@@ -116,7 +115,7 @@ namespace NancyServer2.DAOs
             }
             comm.Parameters.AddWithNullableValue("password", password);
             SqlDataReader reader = comm.ExecuteReader();
-            int error = 1;
+            int error = 2;
             if (reader.Read())
             {
                 error = reader.GetConverted<int>("error");
@@ -134,15 +133,14 @@ namespace NancyServer2.DAOs
             Token result = null;
             SqlCommand comm = new SqlCommand()
             {
-                CommandText = "BEGIN TRANSACTION\n"
-                        + "DECLARE @id AS INT = (SELECT id FROM users WHERE email = @email AND password = @password)\n"
+                CommandText = 
+                          "DECLARE @id AS INT = (SELECT id FROM users WHERE email = @email AND password = @password)\n"
                         + "IF @id IS NOT NULL BEGIN\n"
                         + "DECLARE @token AS UNIQUEIDENTIFIER = NEWID()\n"
                         + "DECLARE @expiration AS DATETIME = DATEADD(MINUTE, 60, CURRENT_TIMESTAMP)\n"
                         + "INSERT INTO dbo.Tokens([guid], userID, expiration)\n"
                         + "VALUES(@token, @id, @expiration)\n"
-                        + "SELECT @token AS token, @expiration AS expiration, @id AS userID END\n"
-                        + "COMMIT",
+                        + "SELECT @token AS token, @expiration AS expiration, @id AS userID END\n",
                 CommandType = System.Data.CommandType.Text,
                 CommandTimeout = 2000,
                 Connection = this.conn
@@ -168,6 +166,50 @@ namespace NancyServer2.DAOs
             }
             reader.Close();
             return result;
+        }
+
+        public string IsTokenValid(Token token)
+        {
+            string error = null;
+            SqlCommand comm = new SqlCommand()
+            {
+                CommandText =
+                          "DECLARE @expiration AS DATETIME\n"
+                        + "DECLARE @foundid AS INT\n"
+                        + "SELECT @foundid = userID, @expiration = expiration FROM dbo.Tokens WHERE guid = @token \n"
+                        + "IF @foundid IS NULL OR @expiration IS NULL BEGIN\n"
+                        + "SELECT 3 AS error RETURN END\n"
+                        + "IF @foundid <> @userid BEGIN\n"
+                        + "SELECT 1 AS error RETURN END\n"
+                        + "IF @expiration < CURRENT_TIMESTAMP BEGIN\n"
+                        + "SELECT 2 AS error RETURN END\n"
+                        + "SELECT 0 AS error\n",
+                CommandType = System.Data.CommandType.Text,
+                CommandTimeout = 2000,
+                Connection = this.conn
+            };
+            comm.Parameters.AddWithNullableValue("@userid", token.User.ID);
+            comm.Parameters.AddWithNullableValue("@token", token.SessionID);
+            SqlDataReader reader = comm.ExecuteReader();
+            int errorCode = 3;
+            if (reader.Read())
+            {
+                errorCode = reader.GetConverted<int>("error");
+            }
+            reader.Close();
+            if (errorCode == 1)
+            {
+                error = "User doesn't match token.";
+            }
+            if (errorCode == 2)
+            {
+                error = "Token expired.";
+            }
+            if (errorCode == 3)
+            {
+                error = "Token doesn't exist.";
+            }
+            return error;
         }
     }
 }

@@ -8,6 +8,9 @@ using System.Text;
 
 namespace NancyServer2.Modules
 {
+    /// <summary>
+    /// This all should be on separate WS, using OAuth or some other tried auth method. But it's good enough for our purposes. 
+    /// </summary>
     public class LoginRegisterModule : NancyModule
     {
         UserDAO dao;
@@ -21,12 +24,43 @@ namespace NancyServer2.Modules
             Get["/users/{id}"] = GetUser;
             Post["/users"] = PostUser;
             Post["/login"] = PostLogin;
+            Post["/checktoken"] = PostToken;
+        }
+
+        private dynamic PostToken(dynamic arg)
+        {
+            Token model = null;
+            try
+            {
+                model = this.Bind<Token>();
+            }
+            catch
+            {
+                return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
+            }
+            string error = dao.IsTokenValid(model);
+            if (String.IsNullOrEmpty(error))
+            {
+                return HttpStatusCode.OK;
+            }
+            else
+            {
+                return Negotiate.WithModel(error).WithStatusCode(HttpStatusCode.Unauthorized);
+            }
         }
 
         private dynamic PostLogin(dynamic arg)
         {
-            var model = this.Bind<User>();
-            if(string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
+            User model = null;
+            try
+            {
+                model = this.Bind<User>();
+            }
+            catch
+            {
+                return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
+            }
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Password))
             {
                 return HttpStatusCode.BadRequest;
             }
@@ -41,7 +75,15 @@ namespace NancyServer2.Modules
 
         private dynamic PostUser(dynamic arg)
         {
-            var model = this.Bind<User>();
+            User model = null;
+            try
+            {
+                model = this.Bind<User>();
+            }
+            catch
+            {
+                return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
+            }
             if (this.dao.Register(model))
             {
                 User user = this.dao.GetUserByEmail(model.Email);
