@@ -211,5 +211,47 @@ namespace NancyServer2.DAOs
             }
             return error;
         }
+
+
+        public string IsTokenValid(Guid token)
+        {
+            string error = null;
+            SqlCommand comm = new SqlCommand()
+            {
+                CommandText =
+                          "DECLARE @expiration AS DATETIME\n"
+                        + "DECLARE @foundid AS INT\n"
+                        + "SELECT @foundid = userID, @expiration = expiration FROM dbo.Tokens WHERE guid = @token \n"
+                        + "IF @foundid IS NULL OR @expiration IS NULL BEGIN\n"
+                        + "SELECT 3 AS error RETURN END\n"
+                        + "IF @expiration < CURRENT_TIMESTAMP BEGIN\n"
+                        + "SELECT 2 AS error RETURN END\n"
+                        + "SELECT 0 AS error\n",
+                CommandType = System.Data.CommandType.Text,
+                CommandTimeout = 2000,
+                Connection = this.conn
+            };
+            comm.Parameters.AddWithNullableValue("@token", token);
+            SqlDataReader reader = comm.ExecuteReader();
+            int errorCode = 3;
+            if (reader.Read())
+            {
+                errorCode = reader.GetConverted<int>("error");
+            }
+            reader.Close();
+            if (errorCode == 1)
+            {
+                error = "User doesn't match token.";
+            }
+            if (errorCode == 2)
+            {
+                error = "Token expired.";
+            }
+            if (errorCode == 3)
+            {
+                error = "Token doesn't exist.";
+            }
+            return error;
+        }
     }
 }
