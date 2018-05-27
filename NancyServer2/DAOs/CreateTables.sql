@@ -1,5 +1,8 @@
 USE HobbyDatabase
 
+DROP TABLE dbo.USers
+GO
+
 CREATE TABLE dbo.Users
 (
 	ID INT IDENTITY PRIMARY KEY,
@@ -9,6 +12,9 @@ CREATE TABLE dbo.Users
 GO
 
 CREATE INDEX usersEmail ON dbo.Users(email)
+GO
+
+DROP TABLE dbo.Tokens
 GO
 
 CREATE TABLE dbo.Tokens

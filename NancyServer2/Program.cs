@@ -1,6 +1,8 @@
 ﻿using Nancy;
 using Nancy.Hosting.Self;
 using NancyServer2.DAOs;
+using NancyServer2.Modules;
+using NancyServer2.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace NancyServer2
     {
         static void Main(string[] args)
         {
-            ConnectionData.Server = @"DESKTOP-MQ6K8RV\SQLEXPRESS";
+            ConnectionData.Server = @"DESKTOP-VN1ED9P\SQLEXPRESS";
             ConnectionData.Database = "HobbyDatabase";
             ConnectionData.AuthenticationString = "Integrated Security = SSPI";
 
@@ -29,12 +31,43 @@ namespace NancyServer2
                 host.Start();
 
                 Console.WriteLine("Your application is running on " + uri);
-                Console.WriteLine("Press any [Enter] to close the host.");
-                Console.ReadLine();
+                Console.WriteLine("Input 'deploy' to redeploy all tables (this will wipe all data and populate tables with example data).");
+                Console.WriteLine("Input 'close' to close the host.");
+                string command = null;
+                while (command == null || command.ToLower() != "close")
+                {
+                    command = Console.ReadLine().ToLower();
+                    switch(command)
+                    {
+                        case "deploy":
+                            Deploy();
+                            break;
+                    }
+                }
 
                 host.Stop();
             }
 
+        }
+
+        private static void Deploy()
+        {
+            DeploymentDAO dao = new DeploymentDAO();
+            dao.Redeploy();
+            UserDAO registrator = new UserDAO();
+            User user = new User()
+            {
+                Email = "user@user.user",
+                Password = "useruser"
+            };
+            registrator.Register(user);
+            user = new User()
+            {
+                Email = "user2@user.user",
+                Password = "useruser"
+            };
+            registrator.Register(user);
+            Console.WriteLine("Redeployment done");
         }
     }
 }

@@ -73,7 +73,7 @@ namespace NancyServer2.Modules
             return HttpStatusCode.Unauthorized;
         }
 
-        private dynamic PostUser(dynamic arg)
+        public dynamic PostUser(dynamic arg)
         {
             User model = null;
             try

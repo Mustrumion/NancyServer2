@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="DAOs\ConnectionData.cs" />
     <Compile Include="DAOs\Extensions.cs" />
+    <Compile Include="DAOs\SQLServerBaseDAO.cs" />
+    <Compile Include="DAOs\DeploymentDAO.cs" />
     <Compile Include="DAOs\UserDAO.cs" />
     <Compile Include="Objects\Session.cs" />
     <Compile Include="Objects\User.cs" />
@@ -64,7 +66,11 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="DAOs\CreateTables.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
