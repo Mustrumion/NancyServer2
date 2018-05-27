@@ -15,7 +15,8 @@ namespace NancyServer2
     {
         static void Main(string[] args)
         {
-            ConnectionData.Server = @"DESKTOP-VN1ED9P\SQLEXPRESS";
+            //ConnectionData.Server = @"DESKTOP-VN1ED9P\SQLEXPRESS";
+            ConnectionData.Server = @"DESKTOP-MQ6K8RV\SQLEXPRESS";
             ConnectionData.Database = "HobbyDatabase";
             ConnectionData.AuthenticationString = "Integrated Security = SSPI";
 
@@ -31,11 +32,11 @@ namespace NancyServer2
                 host.Start();
 
                 Console.WriteLine("Your application is running on " + uri);
-                Console.WriteLine("Input 'deploy' to redeploy all tables (this will wipe all data and populate tables with example data).");
-                Console.WriteLine("Input 'close' to close the host.");
                 string command = null;
                 while (command == null || command.ToLower() != "close")
                 {
+                    Console.WriteLine("Input 'deploy' to redeploy all tables (this will wipe all data and populate tables with example data).");
+                    Console.WriteLine("Input 'close' to close the host.");
                     command = Console.ReadLine().ToLower();
                     switch(command)
                     {

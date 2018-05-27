@@ -38,14 +38,28 @@ namespace NancyServer2.Modules
             {
                 return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
             }
-            string error = dao.IsTokenValid(model);
-            if (String.IsNullOrEmpty(error))
+            string errorMessage = null;
+            SQLServerBaseDAO.TokenState state = dao.IsTokenValid(model);
+
+            if (state ==  SQLServerBaseDAO.TokenState.WrongUser)
+            {
+                errorMessage = "User doesn't match token.";
+            }
+            if (state == SQLServerBaseDAO.TokenState.Expired)
+            {
+                errorMessage = "Token expired.";
+            }
+            if (state == SQLServerBaseDAO.TokenState.DoesNotExist)
+            {
+                errorMessage = "Token doesn't exist.";
+            }
+            if (String.IsNullOrEmpty(errorMessage))
             {
                 return HttpStatusCode.OK;
             }
             else
             {
-                return Negotiate.WithModel(error).WithStatusCode(HttpStatusCode.Unauthorized);
+                return Negotiate.WithModel(errorMessage).WithStatusCode(HttpStatusCode.Unauthorized);
             }
         }
 

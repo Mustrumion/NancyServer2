@@ -7,7 +7,8 @@ CREATE TABLE dbo.Users
 (
 	ID INT IDENTITY PRIMARY KEY,
 	email VARCHAR(256) NOT NULL,
-	[password] VARBINARY(1024) NOT NULL
+	[password] VARBINARY(1024) NOT NULL,
+	CONSTRAINT uniqueEmail UNIQUE(email)   
 )
 GO
 
@@ -21,6 +22,7 @@ CREATE TABLE dbo.Tokens
 (
 	[guid] UNIQUEIDENTIFIER PRIMARY KEY,
 	userID INT NOT NULL,
-	expiration DateTime NOT NULL
+	expiration DateTime NOT NULL,
+    FOREIGN KEY (userID) REFERENCES Users(ID)
 )
 GO

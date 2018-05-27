@@ -13,6 +13,14 @@ namespace NancyServer2.DAOs
     {
         protected SqlConnection conn;
 
+        public enum TokenState
+        {
+            DoesNotExist = 3,
+            Expired = 2,
+            WrongUser = 1,
+            OK = 0
+        }
+
         public SQLServerBaseDAO()
         {
             this.conn = new SqlConnection();
@@ -71,9 +79,9 @@ namespace NancyServer2.DAOs
             return user;
         }
 
-        public string IsTokenValid(Token token)
+        public TokenState IsTokenValid(Token token)
         {
-            string error = null;
+            TokenState error = TokenState.DoesNotExist;
             SqlCommand comm = new SqlCommand()
             {
                 CommandText =
@@ -94,31 +102,19 @@ namespace NancyServer2.DAOs
             comm.Parameters.AddWithNullableValue("@userid", token.User.ID);
             comm.Parameters.AddWithNullableValue("@token", token.SessionID);
             SqlDataReader reader = comm.ExecuteReader();
-            int errorCode = 3;
             if (reader.Read())
             {
-                errorCode = reader.GetConverted<int>("error");
+                error = (TokenState)(reader.GetConverted<int>("error"));
+
             }
             reader.Close();
-            if (errorCode == 1)
-            {
-                error = "User doesn't match token.";
-            }
-            if (errorCode == 2)
-            {
-                error = "Token expired.";
-            }
-            if (errorCode == 3)
-            {
-                error = "Token doesn't exist.";
-            }
             return error;
         }
 
 
-        public string IsTokenValid(Guid token)
+        public TokenState IsTokenValid(Guid token)
         {
-            string error = null;
+            TokenState error = TokenState.DoesNotExist;
             SqlCommand comm = new SqlCommand()
             {
                 CommandText =
@@ -126,34 +122,21 @@ namespace NancyServer2.DAOs
                         + "DECLARE @foundid AS INT\n"
                         + "SELECT @foundid = userID, @expiration = expiration FROM dbo.Tokens WHERE guid = @token \n"
                         + "IF @foundid IS NULL OR @expiration IS NULL BEGIN\n"
-                        + "SELECT 3 AS error RETURN END\n"
+                        + "SELECT @foundid as user, 3 AS error RETURN END\n"
                         + "IF @expiration < CURRENT_TIMESTAMP BEGIN\n"
-                        + "SELECT 2 AS error RETURN END\n"
-                        + "SELECT 0 AS error\n",
+                        + "SELECT @foundid as user, 2 AS error RETURN END\n"
+                        + "SELECT @foundid as user, 0 AS error\n",
                 CommandType = System.Data.CommandType.Text,
                 CommandTimeout = 2000,
                 Connection = this.conn
             };
             comm.Parameters.AddWithNullableValue("@token", token);
             SqlDataReader reader = comm.ExecuteReader();
-            int errorCode = 3;
             if (reader.Read())
             {
-                errorCode = reader.GetConverted<int>("error");
+                error = (TokenState)(reader.GetConverted<int>("error"));
             }
             reader.Close();
-            if (errorCode == 1)
-            {
-                error = "User doesn't match token.";
-            }
-            if (errorCode == 2)
-            {
-                error = "Token expired.";
-            }
-            if (errorCode == 3)
-            {
-                error = "Token doesn't exist.";
-            }
             return error;
         }
     }
