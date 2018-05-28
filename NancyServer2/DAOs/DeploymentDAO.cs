@@ -19,7 +19,7 @@ namespace NancyServer2.DAOs
 
         internal void Redeploy()
         {
-            string script = File.ReadAllText(@"DAOs\\CreateTables.sql");
+            string script = File.ReadAllText(@"DAOs\CreateTables.sql");
 
             // split script on GO command
             IEnumerable<string> commandStrings = Regex.Split(script, @"^\s*GO\s*$",
