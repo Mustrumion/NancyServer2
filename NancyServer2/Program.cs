@@ -68,6 +68,13 @@ namespace NancyServer2
                 Password = "useruser"
             };
             registrator.Register(user);
+            UserProfileDAO profiler = new UserProfileDAO();
+            UserProfile profile = new UserProfile
+            {
+                Nick = "JhonnyJohnTheJonniest",
+                Name = "John",
+                Surname = "Johner"
+            };
             Console.WriteLine("Redeployment done");
         }
     }

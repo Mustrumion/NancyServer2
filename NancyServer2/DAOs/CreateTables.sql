@@ -87,5 +87,5 @@ CREATE TABLE dbo.UserProfiles
 	photoGuid UNIQUEIDENTIFIER NULL,
 )
 
-CREATE INDEX profileUserID ON dbo.UserProfile(userID)
+CREATE INDEX profileUserID ON dbo.UserProfiles(userID)
 GO
