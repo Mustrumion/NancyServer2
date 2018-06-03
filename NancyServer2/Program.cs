@@ -17,6 +17,8 @@ namespace NancyServer2
         {
             ConnectionData.Server = @"DESKTOP-VN1ED9P\SQLEXPRESS";
             //ConnectionData.Server = @"DESKTOP-MQ6K8RV\SQLEXPRESS";
+            //ConnectionData.Server = @"ZIUTEK-KOMPUTER\SQLEXPRESS";
+            //ConnectionData.Database = "HobbyHunter";
             ConnectionData.Database = "HobbyDatabase";
             ConnectionData.AuthenticationString = "Integrated Security = SSPI";
 
