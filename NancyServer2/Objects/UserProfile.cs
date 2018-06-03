@@ -10,7 +10,6 @@ namespace NancyServer2.Objects
     {
         public int UserID { get; set; }
         public int ID { get; set; }
-        public byte[] Image { get; set; }
         public string Name { get; set; }
         public bool NameVisible { get; set; }
         public string Surname { get; set; }

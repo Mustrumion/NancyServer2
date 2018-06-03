@@ -1,37 +1,15 @@
 USE HobbyDatabase
 
+DROP TABLE dbo.UserProfiles
+GO
+
 DROP TABLE dbo.Photos
 GO
 
---EXEC sp_configure filestream_access_level, 2  
---GO
-
---RECONFIGURE
---GO
-
-ALTER DATABASE HobbyDatabase 
-  REMOVE FILE PhotoFiles
-GO
-
-ALTER DATABASE HobbyDatabase
-REMOVE FILEGROUP photos;
-GO
-
-ALTER DATABASE HobbyDatabase
-ADD FILEGROUP photos CONTAINS FILESTREAM;
-GO
-
-ALTER DATABASE HobbyDatabase 
-  ADD FILE ( NAME = N'PhotoFiles', 
-             FILENAME = N'c:\HobbyHunter\Photos' ) 
-     TO FILEGROUP photos
-GO
 
 DROP TABLE dbo.Tokens
 GO
 
-DROP TABLE dbo.UserProfiles
-GO
 
 DROP TABLE dbo.Users
 GO
@@ -62,7 +40,7 @@ GO
 CREATE TABLE dbo.Photos
 (
     [guid] UNIQUEIDENTIFIER ROWGUIDCOL NOT NULL UNIQUE,
-	photo VARBINARY(MAX) FILESTREAM NOT NULL
+	photo VARBINARY(MAX) NOT NULL
 )
 GO
 
@@ -85,6 +63,8 @@ CREATE TABLE dbo.UserProfiles
 	born DATE NULL,
 	ageVisible BIT,
 	photoGuid UNIQUEIDENTIFIER NULL,
+	CONSTRAINT uniqueUserID UNIQUE(userID),
+    FOREIGN KEY (photoGuid) REFERENCES Photos(guid)
 )
 
 CREATE INDEX profileUserID ON dbo.UserProfiles(userID)

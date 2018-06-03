@@ -22,8 +22,8 @@ namespace NancyServer2.Modules
         public UserProfileModule()
         {
             this.dao = new UserProfileDAO();
-            Get["/user/{id}/profile"] = GetProfile;
-            Post["/user/{id}/profile"] = PostProfile;
+            Get["/users/{id}/profile"] = GetProfile;
+            Post["/users/{id}/profile"] = PostProfile;
         }
         
 

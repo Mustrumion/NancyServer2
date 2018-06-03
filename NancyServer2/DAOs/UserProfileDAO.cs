@@ -55,10 +55,15 @@ namespace NancyServer2.DAOs
             SqlCommand comm = new SqlCommand()
             {
                 CommandText =
-                          "INSERT INTO UserProfiles(userId, name, nameVisible, surname, surnameVisible, description, descriptionVisible,\n"
-                        + "interests, interestsVisible, nick, gender, genderVisible, born, ageVisible)\n"
-                        + "VALUES(@userId, @name, @nameVis, @surname, @surnameVis, @description, @descriptionVis,\n"
-                        + "@interests, @interestsVis, @nick, @gender, @genderVis, @born, @ageVis)\n",
+                          "UPDATE dbo.UserProfiles SET name = @name, nameVisible = @nameVis, surname = @surname, surnameVisible = @surnameVis,\n" +
+                          "description = @description, descriptionVisible = @descriptionVis, interests = @interests, interestsVisible = @interestsVis,\n" +
+                          "nick = @nick, gender = @gender, genderVisible = @genderVis, born = @born, ageVisible = @ageVis\n" +
+                          "WHERE userID = @userID\n" +
+                          "IF @@ROWCOUNT = 0\n" +
+                          "INSERT INTO UserProfiles(userId, name, nameVisible, surname, surnameVisible, description, descriptionVisible,\n" +
+                          "interests, interestsVisible, nick, gender, genderVisible, born, ageVisible)\n" +
+                          "VALUES(@userId, @name, @nameVis, @surname, @surnameVis, @description, @descriptionVis,\n" + 
+                          "@interests, @interestsVis, @nick, @gender, @genderVis, @born, @ageVis)\n",
                 CommandType = System.Data.CommandType.Text,
                 CommandTimeout = 2000,
                 Connection = this.conn
@@ -77,6 +82,26 @@ namespace NancyServer2.DAOs
             comm.Parameters.AddWithNullableValue("ageVis", profile.AgeVisible);
             comm.Parameters.AddWithNullableValue("interestsVis", profile.InterestsVisible);
             comm.Parameters.AddWithNullableValue("descriptionVis", profile.DescriptionVisible);
+            comm.ExecuteNonQuery();
+        }
+
+        public void SaveUserProfilePhoto(UserPhoto photo)
+        {
+            SqlCommand comm = new SqlCommand()
+            {
+                CommandText =
+                          "UPDATE dbo.Photos SET photo = @photo\n" +
+                          "WHERE guid = (SELECT photoGuid FROM dbo.UserProfiles WHERE userID = @userID)\n" +
+                          "IF @@ROWCOUNT = 0 BEGIN\n" +
+                          "DECLARE @newguid AS UNIQUEIDENTIFIER = NEWID()\n" +
+                          "INSERT INTO dbo.Photos(guid, photo) VALUES(@newguid, @photo)\n" +
+                          "UPDATE dbo.UserProfiles SET photoGuid = @newguid WHERE userID = @userID END",
+                CommandType = System.Data.CommandType.Text,
+                CommandTimeout = 2000,
+                Connection = this.conn
+            };
+            comm.Parameters.AddWithNullableValue("userID", photo.UserID);
+            comm.Parameters.AddWithNullableValue("photo", photo.Photo);
             comm.ExecuteNonQuery();
         }
     }

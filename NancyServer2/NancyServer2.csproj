@@ -60,6 +60,7 @@
     <Compile Include="Modules\UserProfilesModule.cs" />
     <Compile Include="Objects\Session.cs" />
     <Compile Include="Objects\User.cs" />
+    <Compile Include="Objects\UserPhoto.cs" />
     <Compile Include="Objects\UserProfile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -72,6 +73,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="DAOs\CreateTables.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\emoji.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

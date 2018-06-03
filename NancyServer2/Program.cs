@@ -5,6 +5,7 @@ using NancyServer2.Modules;
 using NancyServer2.Objects;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,6 +85,13 @@ namespace NancyServer2
                 NameVisible = true,
             };
             profiler.SaveUserProfile(profile);
+
+            UserPhoto photo = new UserPhoto
+            {
+                UserID = user1.ID,
+                Photo = File.ReadAllBytes(@"Resources\emoji.png"),
+            };
+            profiler.SaveUserProfilePhoto(photo);
             Console.WriteLine("Redeployment done");
         }
     }
