@@ -10,6 +10,6 @@ namespace NancyServer2.Objects
     {
         public int ProfileID { get; set; }
         public int UserID { get; set; }
-        public byte[] Photo { get; set; }
+        public string PhotoBase64 { get; set; }
     }
 }

@@ -24,8 +24,10 @@ namespace NancyServer2.Modules
             this.dao = new UserProfileDAO();
             Get["/users/{id}/profile"] = GetProfile;
             Post["/users/{id}/profile"] = PostProfile;
+            Get["/users/{id}/photo"] = GetProfilePhoto;
+            Post["/users/{id}/photo"] = PostProfilePhoto;
         }
-        
+
 
         public dynamic PostProfile(dynamic arg)
         {
@@ -46,7 +48,7 @@ namespace NancyServer2.Modules
         private dynamic GetProfile(dynamic arg)
         {
             UserProfile profile = dao.GetUserProfile(arg.id);
-            if(profile == null)
+            if (profile == null)
             {
                 User user = dao.GetUser(arg.id);
                 if (user == null)
@@ -63,6 +65,32 @@ namespace NancyServer2.Modules
                 }
             }
             return profile;
+        }
+
+        public dynamic PostProfilePhoto(dynamic arg)
+        {
+            //TODO check if token is good and user is authorized
+            UserPhoto model = null;
+            try
+            {
+                model = this.Bind<UserPhoto>();
+            }
+            catch
+            {
+                return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
+            }
+            dao.SaveUserProfilePhoto(model);
+            return dao.GetUserProfilePhoto(model.UserID);
+        }
+
+        private dynamic GetProfilePhoto(dynamic arg)
+        {
+            UserPhoto photo = dao.GetUserProfilePhoto(arg.id);
+            if (photo == null)
+            {
+                return HttpStatusCode.BadRequest;
+            }
+            return photo;
         }
     }
 }

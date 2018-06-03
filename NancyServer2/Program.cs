@@ -89,7 +89,7 @@ namespace NancyServer2
             UserPhoto photo = new UserPhoto
             {
                 UserID = user1.ID,
-                Photo = File.ReadAllBytes(@"Resources\emoji.png"),
+                PhotoBase64 = Convert.ToBase64String(File.ReadAllBytes(@"Resources\emoji.png")),
             };
             profiler.SaveUserProfilePhoto(photo);
             Console.WriteLine("Redeployment done");

@@ -101,8 +101,35 @@ namespace NancyServer2.DAOs
                 Connection = this.conn
             };
             comm.Parameters.AddWithNullableValue("userID", photo.UserID);
-            comm.Parameters.AddWithNullableValue("photo", photo.Photo);
+            comm.Parameters.AddWithNullableValue("photo", Convert.FromBase64String(photo.PhotoBase64));
             comm.ExecuteNonQuery();
+        }
+
+        public UserPhoto GetUserProfilePhoto(int userID)
+        {
+            UserPhoto result = null;
+            SqlCommand comm = new SqlCommand()
+            {
+                CommandText =
+                          "SELECT id, photo FROM dbo.UserProfiles prof " +
+                          "LEFT JOIN dbo.Photos phot ON prof.photoGuid = phot.guid WHERE userID = @userID\n",
+                CommandType = System.Data.CommandType.Text,
+                CommandTimeout = 2000,
+                Connection = this.conn
+            };
+            comm.Parameters.AddWithNullableValue("userID", userID);
+            SqlDataReader reader = comm.ExecuteReader();
+            if (reader.Read())
+            {
+                result = new UserPhoto()
+                {
+                    UserID = userID,
+                    ProfileID = reader.GetConverted<int>("id"),
+                    PhotoBase64 = Convert.ToBase64String(reader.GetConverted<byte[]>("photo")),
+                };
+            }
+            reader.Close();
+            return result;
         }
     }
 }
