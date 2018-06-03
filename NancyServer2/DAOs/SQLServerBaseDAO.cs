@@ -79,7 +79,7 @@ namespace NancyServer2.DAOs
             return user;
         }
 
-        public TokenState IsTokenValid(Token token)
+        public TokenState GetTokenState(Token token)
         {
             TokenState error = TokenState.DoesNotExist;
             SqlCommand comm = new SqlCommand()
@@ -112,7 +112,7 @@ namespace NancyServer2.DAOs
         }
 
 
-        public TokenState IsTokenValid(Guid token)
+        public TokenState GetTokenState(Guid token)
         {
             TokenState error = TokenState.DoesNotExist;
             SqlCommand comm = new SqlCommand()

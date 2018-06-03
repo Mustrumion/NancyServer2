@@ -9,6 +9,7 @@ namespace NancyServer2.Objects
     public class UserProfile
     {
         public int UserID { get; set; }
+        public int ID { get; set; }
         public byte[] Image { get; set; }
         public string Name { get; set; }
         public bool NameVisible { get; set; }
@@ -17,12 +18,11 @@ namespace NancyServer2.Objects
         public string Gender { get; set; }
         public bool GenderVisible { get; set; }
         public string Nick { get; set; }
-        public bool NickVisible { get; set; }
         public string Interests { get; set; }
         public bool InterestsVisible { get; set; }
         public string Description { get; set; }
         public bool DescriptionVisible { get; set; }
-        public DateTime Birth { get; set; }
+        public DateTime Born { get; set; }
         public bool AgeVisible { get; set; }
     }
 }

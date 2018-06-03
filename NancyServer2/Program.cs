@@ -56,25 +56,32 @@ namespace NancyServer2
             DeploymentDAO dao = new DeploymentDAO();
             dao.Redeploy();
             UserDAO registrator = new UserDAO();
-            User user = new User()
+            User user1 = new User()
             {
                 Email = "user@user.user",
                 Password = "useruser"
             };
-            registrator.Register(user);
-            user = new User()
+            registrator.Register(user1);
+            User user2 = new User()
             {
                 Email = "user2@user.user",
                 Password = "useruser"
             };
-            registrator.Register(user);
+            registrator.Register(user2);
             UserProfileDAO profiler = new UserProfileDAO();
+            user1 = profiler.GetUserByEmail(user1.Email);
+
             UserProfile profile = new UserProfile
             {
+                UserID = user1.ID,
                 Nick = "JhonnyJohnTheJonniest",
                 Name = "John",
-                Surname = "Johner"
+                Surname = "Johner",
+                Born = new DateTime(2000, 1, 1),
+                AgeVisible = true,
+                NameVisible = true,
             };
+            profiler.SaveUserProfile(profile);
             Console.WriteLine("Redeployment done");
         }
     }

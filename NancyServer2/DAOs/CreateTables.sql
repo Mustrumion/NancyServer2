@@ -30,7 +30,7 @@ GO
 DROP TABLE dbo.Tokens
 GO
 
-DROP TABLE dbo.UserProfile
+DROP TABLE dbo.UserProfiles
 GO
 
 DROP TABLE dbo.Users
@@ -83,7 +83,7 @@ CREATE TABLE dbo.UserProfiles
 	interests VARCHAR(512) NULL,
 	interestsVisible BIT,
 	born DATE NULL,
-	bornVisible BIT,
+	ageVisible BIT,
 	photoGuid UNIQUEIDENTIFIER NULL,
 )
 

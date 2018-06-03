@@ -39,7 +39,7 @@ namespace NancyServer2.Modules
                 return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
             }
             string errorMessage = null;
-            SQLServerBaseDAO.TokenState state = dao.IsTokenValid(model);
+            SQLServerBaseDAO.TokenState state = dao.GetTokenState(model);
 
             if (state ==  SQLServerBaseDAO.TokenState.WrongUser)
             {

@@ -40,10 +40,9 @@ namespace NancyServer2.DAOs
                     Interests = reader.GetConverted<string>("interests"),
                     InterestsVisible = reader.GetConverted<bool>("interestsVisible"),
                     Nick = reader.GetConverted<string>("nick"),
-                    NickVisible = reader.GetConverted<bool>("nickVisible"),
                     Gender = reader.GetConverted<string>("gender"),
                     GenderVisible = reader.GetConverted<bool>("genderVisible"),
-                    Birth = reader.GetConverted<DateTime>("born"),
+                    Born = reader.GetConverted<DateTime>("born"),
                     AgeVisible = reader.GetConverted<bool>("ageVisible")
                 };
             }
@@ -56,11 +55,10 @@ namespace NancyServer2.DAOs
             SqlCommand comm = new SqlCommand()
             {
                 CommandText =
-                          "INSERT INTO UserProfiles(name, nameVisible, surname, surnameVisible, description, descriptionVisible,\n"
-                        + "interests, interestsVisible, nick, nickVisible, gender, genderVisible, born, ageVisible)\n"
-                        + "VALUES(@name, @nameVis, @surname, @surnameVis, @description, @descriptionVis,\n"
-                        + "@interests, @interestsVis, @nick, @nickVis, @surname, @surnameVis, @description, @descritionVis)\n"
-                        + "WHERE userID = @userID",
+                          "INSERT INTO UserProfiles(userId, name, nameVisible, surname, surnameVisible, description, descriptionVisible,\n"
+                        + "interests, interestsVisible, nick, gender, genderVisible, born, ageVisible)\n"
+                        + "VALUES(@userId, @name, @nameVis, @surname, @surnameVis, @description, @descriptionVis,\n"
+                        + "@interests, @interestsVis, @nick, @gender, @genderVis, @born, @ageVis)\n",
                 CommandType = System.Data.CommandType.Text,
                 CommandTimeout = 2000,
                 Connection = this.conn
@@ -70,7 +68,7 @@ namespace NancyServer2.DAOs
             comm.Parameters.AddWithNullableValue("surname", profile.Surname);
             comm.Parameters.AddWithNullableValue("nick", profile.Nick);
             comm.Parameters.AddWithNullableValue("gender", profile.Gender);
-            comm.Parameters.AddWithNullableValue("born", profile.Birth);
+            comm.Parameters.AddWithNullableValue("born", profile.Born);
             comm.Parameters.AddWithNullableValue("description", profile.Description);
             comm.Parameters.AddWithNullableValue("interests", profile.Interests);
             comm.Parameters.AddWithNullableValue("nameVis", profile.NameVisible);
@@ -79,7 +77,6 @@ namespace NancyServer2.DAOs
             comm.Parameters.AddWithNullableValue("ageVis", profile.AgeVisible);
             comm.Parameters.AddWithNullableValue("interestsVis", profile.InterestsVisible);
             comm.Parameters.AddWithNullableValue("descriptionVis", profile.DescriptionVisible);
-            comm.Parameters.AddWithNullableValue("nickVis", profile.NickVisible);
             comm.ExecuteNonQuery();
         }
     }
