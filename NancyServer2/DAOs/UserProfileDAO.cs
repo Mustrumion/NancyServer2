@@ -73,7 +73,14 @@ namespace NancyServer2.DAOs
             comm.Parameters.AddWithNullableValue("surname", profile.Surname);
             comm.Parameters.AddWithNullableValue("nick", profile.Nick);
             comm.Parameters.AddWithNullableValue("gender", profile.Gender);
-            comm.Parameters.AddWithNullableValue("born", profile.Born);
+            if(profile.Born.Year < 1800 || profile.Born.Year > 9000)
+            {
+                comm.Parameters.AddWithNullableValue("born", DBNull.Value);
+            }
+            else
+            {
+                comm.Parameters.AddWithNullableValue("born", profile.Born);
+            }
             comm.Parameters.AddWithNullableValue("description", profile.Description);
             comm.Parameters.AddWithNullableValue("interests", profile.Interests);
             comm.Parameters.AddWithNullableValue("nameVis", profile.NameVisible);
