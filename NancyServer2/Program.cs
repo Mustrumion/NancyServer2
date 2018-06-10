@@ -25,7 +25,7 @@ namespace NancyServer2
             ConnectionData.AuthenticationString = "Integrated Security = SSPI";
             JsonSettings.MaxJsonLength = Int32.MaxValue;
 
-            var uri = new Uri("http://192.168.0.101:8080");
+            var uri = new Uri("http://localhost:8080");
 
             HostConfiguration hostConfigs = new HostConfiguration()
             {

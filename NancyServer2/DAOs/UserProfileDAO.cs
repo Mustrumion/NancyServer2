@@ -132,8 +132,11 @@ namespace NancyServer2.DAOs
                 {
                     UserID = userID,
                     ProfileID = reader.GetConverted<int>("id"),
-                    PhotoBase64 = Convert.ToBase64String(reader.GetConverted<byte[]>("photo")),
                 };
+                if(reader.GetConverted<byte[]>("photo") != null)
+                {
+                    result.PhotoBase64 = Convert.ToBase64String(reader.GetConverted<byte[]>("photo"));
+                }
             }
             reader.Close();
             return result;

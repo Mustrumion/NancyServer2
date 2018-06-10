@@ -57,11 +57,13 @@ namespace NancyServer2.Modules
                 }
                 else
                 {
-                    return new UserProfile()
+                    profile = new UserProfile()
                     {
                         UserID = user.ID,
                         Nick = user.Email.GetUntilOrEmpty("@")
                     };
+                    dao.SaveUserProfile(profile);
+                    return profile;
                 }
             }
             return profile;
