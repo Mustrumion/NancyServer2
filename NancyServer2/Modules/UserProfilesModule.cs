@@ -75,7 +75,7 @@ namespace NancyServer2.Modules
             {
                 model = this.Bind<UserPhoto>();
             }
-            catch
+            catch(Exception e)
             {
                 return Negotiate.WithModel("Incorrect object structure.").WithStatusCode(HttpStatusCode.BadRequest);
             }

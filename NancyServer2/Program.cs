@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using Nancy.Hosting.Self;
+using Nancy.Json;
 using NancyServer2.DAOs;
 using NancyServer2.Modules;
 using NancyServer2.Objects;
@@ -22,8 +23,9 @@ namespace NancyServer2
             //ConnectionData.Database = "HobbyHunter";
             ConnectionData.Database = "HobbyDatabase";
             ConnectionData.AuthenticationString = "Integrated Security = SSPI";
+            JsonSettings.MaxJsonLength = Int32.MaxValue;
 
-            var uri = new Uri("http://localhost:6666");
+            var uri = new Uri("http://192.168.0.101:8080");
 
             HostConfiguration hostConfigs = new HostConfiguration()
             {
