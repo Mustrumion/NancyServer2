@@ -18,8 +18,9 @@ Tworzenie serwera for dumdums:
     4. W nazwie wpisać "HobbyHunter" i nacisnąć OK.
     
 3. Wpisać dane połączeniowe do bazy w Program.cs serwera
-    Zawartość, która jest domyślnie wpisana w polu Instance w MSSMS gdy klika się Connect powinna się znaleźć w polu Server
-    Nazwa bazy danych utworzonej w pkt2. powinna znaleźć się w polu Database.
-    Reszta powinna pozostać bez zmian, jeśli postępowano według instrukcji/wybierano opcje domyślne 
+
+    1. Zawartość, która jest domyślnie wpisana w polu Instance w MSSMS gdy klika się Connect powinna się znaleźć w polu Server
+    2. Nazwa bazy danych utworzonej w pkt2. powinna znaleźć się w polu Database.
+    3. Reszta powinna pozostać bez zmian, jeśli postępowano według instrukcji/wybierano opcje domyślne 
 
 4. Uruchomić program, wpisać deploy w konsoli, aby zainicjować tabele. Tworzony jest również też domyślny użytkownik testowy o email'u user@user.user z hasłem useruser.
